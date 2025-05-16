@@ -13,12 +13,15 @@ export enum UserRole {
 
 @Schema({ timestamps: true })
 export class User {
+  /** 이메일(username) */
   @Prop({ required: true, unique: true })
   email: string;
 
+  /** 비밀번호 */
   @Prop({ required: true })
   password: string;
 
+  /** 권한 */
   @Prop({ enum: UserRole, default: UserRole.USER })
   role: UserRole;
 

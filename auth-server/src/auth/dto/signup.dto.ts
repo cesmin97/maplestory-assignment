@@ -6,7 +6,7 @@ import {
   IsString,
   MinLength,
 } from 'class-validator';
-import { UserRole } from '../../user/user.schema';
+import { UserRole } from '../../user/schema/user.schema';
 
 export class SignupDto {
   @IsEmail()
