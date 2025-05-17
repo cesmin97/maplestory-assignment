@@ -16,7 +16,7 @@ async function bootstrap() {
     }),
   );
 
-  app.setGlobalPrefix('auth-server/api');
+  app.setGlobalPrefix('event-server/api');
 
   const configService = app.get(ConfigService);
   const serverName = configService.get<number>('SERVER_NAME') || 'SERVER';
