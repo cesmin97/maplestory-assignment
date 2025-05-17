@@ -4,7 +4,6 @@ import {
   IsBoolean,
   IsDate,
   IsEnum,
-  IsMongoId,
   IsNotEmpty,
   IsNumber,
   IsString,

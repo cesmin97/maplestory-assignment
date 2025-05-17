@@ -1,9 +1,13 @@
 /* eslint-disable prettier/prettier */
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { CreateEventDto } from '../dto/create-event.dto';
-import { EventService } from '../service/event.service';
-import { EventListFilter } from '../dto/event-list.filter';
 import { CreateRewardDto } from '../dto/create-reward.dto';
+import { EventConditionResponseDto } from '../dto/event-condition-response.dto';
+import { EventDetailResponseDto } from '../dto/event-detail-response.dto';
+import { EventListResponseDto } from '../dto/event-list-response.dto';
+import { EventListFilter } from '../dto/event-list.filter';
+import { RewardResponseDto } from '../dto/reward-response.dto';
+import { EventService } from '../service/event.service';
 
 @Controller('events')
 export class EventController {
@@ -18,7 +22,9 @@ export class EventController {
    */
   @Post()
   async createEvent(@Body() dto: CreateEventDto) {
-    const event = await this.eventService.createEvent(dto);
+    const event: EventDetailResponseDto =
+      await this.eventService.createEvent(dto);
+
     return {
       message: '이벤트 생성 성공',
       event,
@@ -38,10 +44,14 @@ export class EventController {
     @Param('eventId') eventId: string,
     @Body() dto: CreateRewardDto,
   ) {
-    const responseDto = await this.eventService.createReward(eventId, dto);
+    const reward: RewardResponseDto = await this.eventService.createReward(
+      eventId,
+      dto,
+    );
+
     return {
       message: '보상 생성 성공',
-      responseDto,
+      reward,
     };
   }
 
@@ -53,10 +63,12 @@ export class EventController {
    */
   @Get()
   async getEvents(@Query() filter: EventListFilter) {
-    const responseDtos = await this.eventService.findEvents(filter);
+    const events: EventListResponseDto[] =
+      await this.eventService.findEvents(filter);
+
     return {
       message: '이벤트 목록 조회 성공',
-      responseDtos,
+      events,
     };
   }
 
@@ -68,10 +80,46 @@ export class EventController {
    */
   @Get(':eventId')
   async getEventById(@Param('eventId') eventId: string) {
-    const responseDto = await this.eventService.findEventById(eventId);
+    const event: EventDetailResponseDto =
+      await this.eventService.findEventById(eventId);
+
     return {
       message: '이벤트 조회 성공',
-      responseDto,
+      event,
+    };
+  }
+
+  /**
+   * 이벤트 ID 기반 조건 목록 조회 API
+   *
+   * @param eventId
+   * @returns
+   */
+  @Get(':eventId/conditions')
+  async getConditionsByEventId(@Param('eventId') eventId: string) {
+    const conditions: EventConditionResponseDto[] =
+      await this.eventService.findConditionsByEventId(eventId);
+
+    return {
+      message: '이벤트 조건 목록 조회 성공',
+      conditions,
+    };
+  }
+
+  /**
+   * 이벤트 ID 기반 보상 목록 조회 API
+   *
+   * @param eventId
+   * @returns
+   */
+  @Get(':eventId/rewards')
+  async getRewardsByEventId(@Param('eventId') eventId: string) {
+    const rewards: RewardResponseDto[] =
+      await this.eventService.findRewardsByEventId(eventId);
+
+    return {
+      message: '이벤트 보상 목록 조회 성공',
+      rewards,
     };
   }
 }
