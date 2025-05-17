@@ -1,15 +1,15 @@
 /* eslint-disable prettier/prettier */
 import {
-  ConflictException,
+  BadRequestException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
-import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
-import { User, UserDocument } from '../../user/schema/user.schema';
+import { comparePassword, hashPassword } from 'src/util/password.util';
+import { User, UserDocument, UserRole } from '../../user/schema/user.schema';
 import { SigninDto } from '../dto/signin.dto';
 import { SignupDto } from '../dto/signup.dto';
 import { JwtToken, JwtTokenDocument } from '../schema/jwt-token.schema';
@@ -32,20 +32,20 @@ export class AuthService {
    * @returns
    */
   async signup(dto: SignupDto): Promise<User> {
-    const { email, password, role } = dto;
+    const { email, password } = dto;
 
     /** 1. 중복 사용자 검증 */
     const existingUser = await this.userModel.findOne({ email });
     if (existingUser) {
-      throw new ConflictException('이미 존재하는 이메일입니다.');
+      throw new BadRequestException('이미 존재하는 이메일입니다.');
     }
 
     /** 2. 사용자 생성 */
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await hashPassword(password);
     const newUser = new this.userModel({
       email,
       password: hashedPassword,
-      role,
+      role: UserRole.USER,
     });
     return newUser.save();
   }
@@ -69,7 +69,7 @@ export class AuthService {
     }
 
     /** 2. 비밀번호 검증 */
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await comparePassword(password, user.password);
     if (!isPasswordValid) {
       throw new UnauthorizedException('이메일 또는 비밀번호가 잘못되었습니다.');
     }

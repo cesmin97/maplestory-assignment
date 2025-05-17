@@ -6,7 +6,7 @@ import { SignupDto } from '../dto/signup.dto';
 import { AuthService } from '../service/auth.service';
 import { Response } from 'express';
 
-@Controller('api/auth')
+@Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,

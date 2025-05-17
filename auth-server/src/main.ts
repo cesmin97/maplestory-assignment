@@ -16,10 +16,12 @@ async function bootstrap() {
     }),
   );
 
+  app.setGlobalPrefix('auth-server/api');
+
   const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT') || 3000;
 
   await app.listen(port);
-  console.log(`🚀 Server is running on http://localhost:${port}`);
+  console.log(`Server is running on http://localhost:${port}`);
 }
 bootstrap();
