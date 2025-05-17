@@ -6,6 +6,8 @@ export class RewardResponseDto {
 
   type: RewardType;
 
+  name: string;
+
   amount: number;
 
   description: string;
@@ -23,6 +25,7 @@ export class RewardResponseDto {
   constructor(reward: Reward) {
     this.id = reward._id;
     this.type = reward.type;
+    this.name = reward.name;
     this.amount = reward.amount;
     this.description = reward.description;
     this.eventId = reward.eventId;

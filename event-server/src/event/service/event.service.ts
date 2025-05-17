@@ -99,6 +99,7 @@ export class EventService {
     /** 2. 이벤트 ID 기반 보상 생성 */
     const newReward = new this.rewardModel({
       type: dto.type,
+      name: dto.name,
       amount: dto.amount,
       description: dto.description,
       eventId: eventId,

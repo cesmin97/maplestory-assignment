@@ -16,6 +16,10 @@ export class Reward {
   @Prop({ enum: RewardType })
   type: RewardType;
 
+  /** 보상 명 */
+  @Prop({ required: true })
+  name: string;
+
   /** 보상 수량 */
   @Prop({ required: true })
   amount: number;
