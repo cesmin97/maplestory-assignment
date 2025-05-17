@@ -3,6 +3,7 @@ import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { CreateEventDto } from '../dto/create-event.dto';
 import { EventService } from '../service/event.service';
 import { EventListFilter } from '../dto/event-list.filter';
+import { CreateRewardDto } from '../dto/create-reward.dto';
 
 @Controller('events')
 export class EventController {
@@ -21,6 +22,26 @@ export class EventController {
     return {
       message: '이벤트 생성 성공',
       event,
+    };
+  }
+
+  /**
+   * 보상 등록 API
+   * 관리자, 운영자만 접근 가능
+   *
+   * @param eventId
+   * @param dto
+   * @returns
+   */
+  @Post(':eventId/rewards')
+  async createReward(
+    @Param('eventId') eventId: string,
+    @Body() dto: CreateRewardDto,
+  ) {
+    const responseDto = await this.eventService.createReward(eventId, dto);
+    return {
+      message: '보상 생성 성공',
+      responseDto,
     };
   }
 

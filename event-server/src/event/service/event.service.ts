@@ -2,18 +2,21 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Event, EventDocument } from '../schema/event.schema';
+import { toKstTime } from 'src/util/time.util';
 import { CreateEventDto } from '../dto/create-event.dto';
-import {
-  EventCondition,
-  EventConditionDocument,
-} from '../schema/event-condition.schema';
+import { CreateRewardDto } from '../dto/create-reward.dto';
 import { EventListFilter } from '../dto/event-list.filter';
 import {
   EventConditionResponseDto,
   EventResponseDto,
 } from '../dto/event-response.dto';
-import { toKstTime } from 'src/util/time.util';
+import {
+  EventCondition,
+  EventConditionDocument,
+} from '../schema/event-condition.schema';
+import { Event, EventDocument } from '../schema/event.schema';
+import { Reward, RewardDocument } from '../schema/reward.schema';
+import { RewardResponseDto } from '../dto/reward-response.dto';
 
 @Injectable()
 export class EventService {
@@ -21,6 +24,7 @@ export class EventService {
     @InjectModel(Event.name) private eventModel: Model<EventDocument>,
     @InjectModel(EventCondition.name)
     private eventConditionModel: Model<EventConditionDocument>,
+    @InjectModel(Reward.name) private rewardModel: Model<RewardDocument>,
   ) {}
 
   /**
@@ -46,7 +50,7 @@ export class EventService {
     /** 2. 생성 된 이벤트의 ID 기반으로 조건 생성
      *  조건 저장 비동기 처리
      */
-    const newEventConditions = dto.conditions.map(async (conditionDto) => {
+    const promises = dto.conditions.map(async (conditionDto) => {
       const newEventCondition = new this.eventConditionModel({
         type: conditionDto.type,
         value: conditionDto.value,
@@ -56,11 +60,62 @@ export class EventService {
       });
 
       await newEventCondition.save();
+      return newEventCondition;
+    });
+    const newEventConditions = await Promise.all(promises);
+
+    const responseDto: EventResponseDto = {
+      id: newEvent._id,
+      name: newEvent.name,
+      description: newEvent.description,
+      status: newEvent.status,
+      startDate: newEvent.startDate,
+      endDate: newEvent.endDate,
+      createdAt: toKstTime(newEvent.createdAt),
+      conditions: [],
+    };
+    newEventConditions.map((condition) => {
+      const conditionResponseDto: EventConditionResponseDto = {
+        type: condition.type,
+        value: condition.value,
+        description: condition.description,
+        isActivate: condition.isActivate,
+      };
+      responseDto.conditions.push(conditionResponseDto);
     });
 
-    await Promise.all(newEventConditions);
+    return responseDto;
+  }
 
-    return { id: newEvent._id, name: newEvent.name };
+  /**
+   * 이벤트 ID 기반 보상 생성
+   *
+   * @param eventId
+   * @param dto
+   * @returns
+   */
+  async createReward(eventId: string, dto: CreateRewardDto) {
+    /** 1. 이벤트 검증 */
+    const event = await this.eventModel.findById(eventId);
+    if (!event) {
+      throw new NotFoundException('이벤트를 찾을 수 없습니다.');
+    }
+
+    /** 2. 이벤트 ID 기반 보상 생성 */
+    const newReward = new this.rewardModel({
+      type: dto.type,
+      amount: dto.amount,
+      description: dto.description,
+      eventId: eventId,
+      isActivate: dto.isActivate,
+      startDate: dto.startDate,
+      endDate: dto.endDate,
+    });
+    await newReward.save();
+
+    const responseDto: RewardResponseDto = new RewardResponseDto(newReward);
+
+    return responseDto;
   }
 
   /**
