@@ -1,12 +1,13 @@
 /* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
+import { UserService } from 'src/user/service/user.service';
 import { User, UserSchema } from '../user/schema/user.schema';
 import { AuthController } from './controller/auth.controller';
-import { AuthService } from './service/auth.service';
-import { JwtModule } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
 import { JwtToken, JwtTokenSchema } from './schema/jwt-token.schema';
+import { AuthService } from './service/auth.service';
 
 @Module({
   imports: [
@@ -22,7 +23,6 @@ import { JwtToken, JwtTokenSchema } from './schema/jwt-token.schema';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
-  exports: [AuthService],
+  providers: [AuthService, UserService],
 })
 export class AuthModule {}

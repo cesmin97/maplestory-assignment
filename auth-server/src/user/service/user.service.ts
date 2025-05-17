@@ -37,7 +37,7 @@ export class UserService {
       password: hashedPassword,
       role: role ? role : UserRole.USER,
     });
-    return newUser.save();
+    return await newUser.save();
   }
 
   /**

@@ -9,20 +9,23 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { comparePassword, hashPassword } from 'src/util/password.util';
+import { CreateUserDto } from 'src/user/dto/create-user.dto';
+import { UserService } from 'src/user/service/user.service';
+import { comparePassword } from 'src/util/password.util';
 import { User, UserDocument, UserRole } from '../../user/schema/user.schema';
+import { RevokeTokenDto } from '../dto/revoke-token.dto';
 import { SigninDto } from '../dto/signin.dto';
 import { SignupDto } from '../dto/signup.dto';
 import { JwtToken, JwtTokenDocument } from '../schema/jwt-token.schema';
-import { RevokeTokenDto } from '../dto/revoke-token.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     @InjectModel(JwtToken.name) private jwtTokenModel: Model<JwtTokenDocument>,
-    private jwtService: JwtService,
-    private configService: ConfigService,
+    private readonly configService: ConfigService,
+    private readonly jwtService: JwtService,
+    private readonly userService: UserService,
   ) {}
 
   /**
@@ -43,13 +46,12 @@ export class AuthService {
     }
 
     /** 2. 사용자 생성 */
-    const hashedPassword = await hashPassword(password);
-    const newUser = new this.userModel({
-      email,
-      password: hashedPassword,
+    const createUserDto = new CreateUserDto({
+      email: email,
+      password: password,
       role: UserRole.USER,
     });
-    return newUser.save();
+    return await this.userService.createUser(createUserDto);
   }
 
   /**

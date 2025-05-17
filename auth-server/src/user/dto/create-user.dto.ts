@@ -20,4 +20,8 @@ export class CreateUserDto {
 
   @IsEnum(UserRole, { message: '유효하지 않은 역할입니다.' })
   role: UserRole;
+
+  constructor(partial: Partial<CreateUserDto>) {
+    Object.assign(this, partial);
+  }
 }

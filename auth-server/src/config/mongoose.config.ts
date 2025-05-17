@@ -1,10 +1,10 @@
 /* eslint-disable prettier/prettier */
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
   MongooseModuleOptions,
   MongooseOptionsFactory,
 } from '@nestjs/mongoose';
-import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class MongooseConfigService implements MongooseOptionsFactory {

@@ -1,8 +1,8 @@
 {
   "name": "auth-server",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Auth Server",
+  "author": "Seongmin Hong",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {

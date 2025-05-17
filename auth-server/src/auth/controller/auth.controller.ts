@@ -8,17 +8,17 @@ import {
   Res,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Response } from 'express';
+import { RevokeTokenDto } from '../dto/revoke-token.dto';
 import { SigninDto } from '../dto/signin.dto';
 import { SignupDto } from '../dto/signup.dto';
 import { AuthService } from '../service/auth.service';
-import { Response } from 'express';
-import { RevokeTokenDto } from '../dto/revoke-token.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(
+    private readonly configService: ConfigService,
     private readonly authService: AuthService,
-    private configService: ConfigService,
   ) {}
 
   /**

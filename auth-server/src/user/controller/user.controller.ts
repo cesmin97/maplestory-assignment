@@ -17,7 +17,6 @@ export class UserController {
    */
   @Post()
   async createUser(@Body() dto: CreateUserDto) {
-    console.log(dto);
     const user = await this.userService.createUser(dto);
     return {
       message: '사용자 생성 성공',
