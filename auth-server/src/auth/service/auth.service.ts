@@ -2,6 +2,7 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -13,6 +14,7 @@ import { User, UserDocument, UserRole } from '../../user/schema/user.schema';
 import { SigninDto } from '../dto/signin.dto';
 import { SignupDto } from '../dto/signup.dto';
 import { JwtToken, JwtTokenDocument } from '../schema/jwt-token.schema';
+import { RevokeTokenDto } from '../dto/revoke-token.dto';
 
 @Injectable()
 export class AuthService {
@@ -104,5 +106,35 @@ export class AuthService {
       accessToken,
       refreshToken,
     };
+  }
+
+  /**
+   * 사용자 이메일(username) 기반 접속정보(토큰) 삭제
+   * 사용자 존재 여부 검증
+   * 토큰 존재 여부 검증
+   *
+   * @param dto
+   */
+  async revokeToken(dto: RevokeTokenDto) {
+    const { email } = dto;
+
+    /** 1. 이메일 확인 */
+    const user = await this.userModel.findOne({ email });
+    if (!user) {
+      throw new NotFoundException(
+        '해당 이메일을 가진 사용자를 찾을 수 없습니다.',
+      );
+    }
+
+    /** 2. 발급 된 토큰 존재 여부 확인 */
+    const jwtToken = await this.jwtTokenModel.findOne({ userId: user._id });
+    if (!jwtToken) {
+      throw new NotFoundException(
+        '해당 사용자의 접속 정보를 찾을 수 없습니다.',
+      );
+    }
+
+    /** 3. 토큰 삭제 */
+    await this.jwtTokenModel.deleteOne({ userId: user._id });
   }
 }

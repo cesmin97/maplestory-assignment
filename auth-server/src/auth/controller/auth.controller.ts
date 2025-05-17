@@ -1,10 +1,18 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  HttpStatus,
+  Post,
+  Res,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { SigninDto } from '../dto/signin.dto';
 import { SignupDto } from '../dto/signup.dto';
 import { AuthService } from '../service/auth.service';
 import { Response } from 'express';
+import { RevokeTokenDto } from '../dto/revoke-token.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -56,5 +64,20 @@ export class AuthController {
       message: '로그인 성공',
       accessToken: jwtToken.accessToken,
     });
+  }
+
+  /**
+   * 접속 정보(토큰) 삭제 API
+   * 관리자만 접근 가능
+   *
+   * @param dto
+   * @returns
+   */
+  @Delete('revoke-token')
+  async revokeToken(@Body() dto: RevokeTokenDto) {
+    await this.authService.revokeToken(dto);
+    return {
+      message: `${dto.email} 의 접속 정보가 삭제되었습니다.`,
+    };
   }
 }
