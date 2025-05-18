@@ -15,14 +15,27 @@ import { comparePassword } from 'src/util/password.util';
 import { User, UserDocument, UserRole } from '../../user/schema/user.schema';
 import { RevokeTokenDto } from '../dto/revoke-token.dto';
 import { SigninDto } from '../dto/signin.dto';
+import { SignupResponseDto } from '../dto/signup-response.dto';
 import { SignupDto } from '../dto/signup.dto';
+import {
+  FriendInviteHistory,
+  FriendInviteHistoryDocument,
+} from '../schema/friend-invite-history.schema';
 import { JwtToken, JwtTokenDocument } from '../schema/jwt-token.schema';
+import {
+  LoginHistory,
+  LoginHistoryDocument,
+} from '../schema/login-history.schema';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     @InjectModel(JwtToken.name) private jwtTokenModel: Model<JwtTokenDocument>,
+    @InjectModel(LoginHistory.name)
+    private loginHistoryModel: Model<LoginHistoryDocument>,
+    @InjectModel(FriendInviteHistory.name)
+    private friendInviteHistoryModel: Model<FriendInviteHistoryDocument>,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
     private readonly userService: UserService,
@@ -36,8 +49,8 @@ export class AuthService {
    * @param dto
    * @returns
    */
-  async signup(dto: SignupDto): Promise<User> {
-    const { email, password } = dto;
+  async signup(dto: SignupDto): Promise<SignupResponseDto> {
+    const { email, password, invitedBy } = dto;
 
     /** 1. 중복 사용자 검증 */
     const existingUser = await this.userModel.findOne({ email });
@@ -51,7 +64,26 @@ export class AuthService {
       password: password,
       role: UserRole.USER,
     });
-    return await this.userService.createUser(createUserDto);
+    const createdUser = await this.userService.createUser(createUserDto);
+
+    /** 3. 초대 이력 생성
+     * invitedBy(초대한 사용자 ID)에 해당하는 사용자 존재 시 friendInviteHistoryModel 생성
+     */
+    if (invitedBy) {
+      const inviter = await this.userService.findUserById(invitedBy);
+      if (inviter) {
+        const newFriendInviteHistory = new this.friendInviteHistoryModel({
+          userId: invitedBy,
+          invitedUserId: createdUser._id,
+        });
+        await newFriendInviteHistory.save();
+      }
+    }
+
+    /** 4. responseDto 생성 및 return */
+    const responseDto: SignupResponseDto = new SignupResponseDto(createdUser);
+
+    return responseDto;
   }
 
   /**
@@ -98,11 +130,17 @@ export class AuthService {
 
     /** 5. DB에 토큰 저장 */
     const newJwtToken = new this.jwtTokenModel({
-      userId: user._id.toString(),
+      userId: user._id,
       accessToken,
       refreshToken,
     });
     await newJwtToken.save();
+
+    /** 6. 로그인 이력 저장 */
+    const newLoginHistory = new this.loginHistoryModel({
+      userId: user._id,
+    });
+    await newLoginHistory.save();
 
     return {
       accessToken,

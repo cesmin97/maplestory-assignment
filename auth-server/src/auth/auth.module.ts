@@ -6,7 +6,15 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserService } from 'src/user/service/user.service';
 import { User, UserSchema } from '../user/schema/user.schema';
 import { AuthController } from './controller/auth.controller';
+import {
+  FriendInviteHistory,
+  FriendInviteHistorySchema,
+} from './schema/friend-invite-history.schema';
 import { JwtToken, JwtTokenSchema } from './schema/jwt-token.schema';
+import {
+  LoginHistory,
+  LoginHistorySchema,
+} from './schema/login-history.schema';
 import { AuthService } from './service/auth.service';
 
 @Module({
@@ -14,6 +22,8 @@ import { AuthService } from './service/auth.service';
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
       { name: JwtToken.name, schema: JwtTokenSchema },
+      { name: LoginHistory.name, schema: LoginHistorySchema },
+      { name: FriendInviteHistory.name, schema: FriendInviteHistorySchema },
     ]),
     JwtModule.registerAsync({
       useFactory: async (configService: ConfigService) => ({

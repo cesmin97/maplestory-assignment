@@ -41,6 +41,17 @@ export class UserService {
   }
 
   /**
+   * 사용자 ID 기반 사용자 조회
+   *
+   * @param id
+   */
+  async findUserById(id: string): Promise<User> {
+    const user = await this.userModel.findOne({ _id: id });
+
+    return user;
+  }
+
+  /**
    * 사용자 권한 부여
    *
    * @param dto

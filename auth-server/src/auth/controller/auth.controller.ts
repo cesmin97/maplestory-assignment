@@ -11,6 +11,7 @@ import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
 import { RevokeTokenDto } from '../dto/revoke-token.dto';
 import { SigninDto } from '../dto/signin.dto';
+import { SignupResponseDto } from '../dto/signup-response.dto';
 import { SignupDto } from '../dto/signup.dto';
 import { AuthService } from '../service/auth.service';
 
@@ -29,15 +30,10 @@ export class AuthController {
    */
   @Post('signup')
   async signup(@Body() dto: SignupDto) {
-    const user = await this.authService.signup(dto);
+    const user: SignupResponseDto = await this.authService.signup(dto);
     return {
       message: '회원가입 성공',
-      user: {
-        id: user._id,
-        email: user.email,
-        role: user.role,
-        createdAt: user.createdAt,
-      },
+      user,
     };
   }
 
