@@ -36,14 +36,6 @@ export class Reward {
   @Prop({ default: true })
   isActivate: boolean;
 
-  /** 보상 시작일 */
-  @Prop({ required: true })
-  startDate: Date;
-
-  /** 보상 종료일 */
-  @Prop({ required: true })
-  endDate: Date;
-
   _id?: string;
   createdAt?: Date;
   updatedAt?: Date;

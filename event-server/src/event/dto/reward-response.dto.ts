@@ -16,10 +16,6 @@ export class RewardResponseDto {
 
   isActivate: boolean;
 
-  startDate: Date;
-
-  endDate: Date;
-
   createdAt: Date;
 
   constructor(reward: Reward) {
@@ -30,8 +26,6 @@ export class RewardResponseDto {
     this.description = reward.description;
     this.eventId = reward.eventId;
     this.isActivate = reward.isActivate;
-    this.startDate = reward.startDate;
-    this.endDate = reward.endDate;
     this.createdAt = reward.createdAt;
   }
 }

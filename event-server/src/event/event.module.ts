@@ -2,6 +2,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { EventController } from './controller/event.controller';
+import { RewardController } from './controller/reward.controller';
 import {
   EventCondition,
   EventConditionSchema,
@@ -21,6 +22,7 @@ import {
 } from './schema/reward-history.schema';
 import { Reward, RewardSchema } from './schema/reward.schema';
 import { EventService } from './service/event.service';
+import { RewardService } from './service/reward.service';
 
 @Module({
   imports: [
@@ -33,7 +35,7 @@ import { EventService } from './service/event.service';
       { name: FriendInviteHistory.name, schema: FriendInviteHistorySchema },
     ]),
   ],
-  controllers: [EventController],
-  providers: [EventService],
+  controllers: [EventController, RewardController],
+  providers: [EventService, RewardService],
 })
 export class EventModule {}

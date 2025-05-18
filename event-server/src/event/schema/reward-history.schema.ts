@@ -1,10 +1,11 @@
 /* eslint-disable prettier/prettier */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { toKstTime } from 'src/util/time.util';
 
 export type RewardHistoryDocument = RewardHistory & Document;
 
-export enum RewardStatus {
+export enum RewardHistoryStatus {
   /** 보상 성공 */
   SUCCESS = 'SUCCESS',
   /** 보상 실패 */
@@ -25,20 +26,20 @@ export class RewardHistory {
   @Prop({ required: true })
   eventId: string;
 
-  /** 보상 ID */
+  /** 보상 ID 목록 */
   @Prop({ required: true })
-  rewardId: string;
+  rewardIds: string[];
 
-  /** 보상 요청 상태 (예: 'success', 'failed') */
+  /** 보상 요청 상태 */
   @Prop({ required: true })
-  status: string;
+  status: RewardHistoryStatus;
 
-  /** 보상 요청일 */
-  @Prop({ default: Date.now })
+  /** 보상 요청 일시 */
+  @Prop({ default: () => toKstTime(new Date()) })
   requestDate: Date;
 
   /** 보상 지급일 */
-  @Prop({ required: true })
+  @Prop()
   rewardDate: Date;
 
   _id?: string;

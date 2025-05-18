@@ -8,18 +8,16 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { toKstTime } from 'src/util/time.util';
 import { CreateEventDto } from '../dto/create-event.dto';
-import { CreateRewardDto } from '../dto/create-reward.dto';
 import { EventConditionResponseDto } from '../dto/event-condition-response.dto';
 import { EventDetailResponseDto } from '../dto/event-detail-response.dto';
 import { EventListResponseDto } from '../dto/event-list-response.dto';
 import { EventListFilter } from '../dto/event-list.filter';
-import { RewardResponseDto } from '../dto/reward-response.dto';
 import {
   EventCondition,
   EventConditionDocument,
 } from '../schema/event-condition.schema';
 import { Event, EventDocument } from '../schema/event.schema';
-import { Reward, RewardDocument } from '../schema/reward.schema';
+import { RewardService } from './reward.service';
 
 @Injectable()
 export class EventService {
@@ -27,7 +25,7 @@ export class EventService {
     @InjectModel(Event.name) private eventModel: Model<EventDocument>,
     @InjectModel(EventCondition.name)
     private eventConditionModel: Model<EventConditionDocument>,
-    @InjectModel(Reward.name) private rewardModel: Model<RewardDocument>,
+    private readonly rewardService: RewardService,
   ) {}
 
   /**
@@ -83,39 +81,6 @@ export class EventService {
   }
 
   /**
-   * 이벤트 ID 기반 보상 생성
-   *
-   * @param eventId
-   * @param dto
-   * @returns
-   */
-  async createReward(eventId: string, dto: CreateRewardDto) {
-    /** 1. 이벤트 검증 */
-    const event = await this.eventModel.findById(eventId);
-    if (!event) {
-      throw new BadRequestException('존재하지 않는 이벤트입니다.');
-    }
-
-    /** 2. 이벤트 ID 기반 보상 생성 */
-    const newReward = new this.rewardModel({
-      type: dto.type,
-      name: dto.name,
-      amount: dto.amount,
-      description: dto.description,
-      eventId: eventId,
-      isActivate: dto.isActivate,
-      startDate: dto.startDate,
-      endDate: dto.endDate,
-    });
-    await newReward.save();
-
-    /** 3. 생성 된 보상으로 ResponseDto 생성 및 return */
-    const responseDto: RewardResponseDto = new RewardResponseDto(newReward);
-
-    return responseDto;
-  }
-
-  /**
    * 이벤트 목록 조회
    * 추후, filter 적용 예정
    *
@@ -156,7 +121,7 @@ export class EventService {
     const conditions = await this.findConditionsByEventId(eventId);
 
     /** 3. 이벤트 아이디 기반 보상 목록 조회 */
-    const rewards = await this.findRewardsByEventId(eventId);
+    const rewards = await this.rewardService.findRewardsByEventId(eventId);
 
     /** 4. ResponseDto로 만들어 return */
     const responseDto: EventDetailResponseDto = {
@@ -190,28 +155,6 @@ export class EventService {
     const conditions = await this.eventConditionModel.find({ eventId });
     const responseDtos = conditions.map((condition) => {
       return new EventConditionResponseDto(condition);
-    });
-
-    return responseDtos;
-  }
-
-  /**
-   * 이벤트 ID 기반 보상 목록 조회
-   *
-   * @param eventId
-   * @returns
-   */
-  async findRewardsByEventId(eventId: string) {
-    /** 1. 이벤트 검증 */
-    const event = await this.eventModel.findById(eventId);
-    if (!event) {
-      throw new BadRequestException('존재하지 않는 이벤트입니다.');
-    }
-
-    /** 2. 이벤트 ID 기반 보상 목록 조회 및 Dto에 담아 return */
-    const rewards = await this.rewardModel.find({ eventId });
-    const responseDtos = rewards.map((reward) => {
-      return new RewardResponseDto(reward);
     });
 
     return responseDtos;

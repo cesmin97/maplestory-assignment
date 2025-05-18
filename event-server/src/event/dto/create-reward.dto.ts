@@ -1,8 +1,6 @@
 /* eslint-disable prettier/prettier */
-import { Type } from 'class-transformer';
 import {
   IsBoolean,
-  IsDate,
   IsEnum,
   IsNotEmpty,
   IsNumber,
@@ -30,14 +28,4 @@ export class CreateRewardDto {
 
   @IsBoolean({ message: '활성화 여부는 boolean 값만 허용됩니다.' })
   isActivate: boolean;
-
-  @IsDate({ message: '보상 시작일은 날짜 형식만 허용됩니다.' })
-  @IsNotEmpty({ message: '보상 시작일은 필수입니다.' })
-  @Type(() => Date)
-  startDate: Date;
-
-  @IsDate({ message: '보상 종료일은 날짜 형식만 허용됩니다.' })
-  @IsNotEmpty({ message: '보상 종료일은 필수입니다.' })
-  @Type(() => Date)
-  endDate: Date;
 }

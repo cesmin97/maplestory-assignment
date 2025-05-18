@@ -9,14 +9,14 @@ export enum EventStatus {
   ACTIVATE = 'ACTIVATE',
   /** 이벤트가 비활성화 된 상태 */
   INACTIVATE = 'INACTIVATE',
-  /** 이벤트가 완료 된 상태 */
-  COMPLEATED = 'COMPLEATED',
-  /** 이벤트가 대기 중인 상태 */
-  PENDING = 'PENDING',
-  /** 이벤트가 중지 된 상태 */
-  PAUSED = 'PAUSED',
-  /** 이벤트가 취소 된 상태 */
-  CANCELLED = 'CANCELLED',
+  // /** 이벤트가 완료 된 상태 */
+  // COMPLEATED = 'COMPLEATED',
+  // /** 이벤트가 대기 중인 상태 */
+  // PENDING = 'PENDING',
+  // /** 이벤트가 중지 된 상태 */
+  // PAUSED = 'PAUSED',
+  // /** 이벤트가 취소 된 상태 */
+  // CANCELLED = 'CANCELLED',
 }
 
 @Schema({ timestamps: true })
