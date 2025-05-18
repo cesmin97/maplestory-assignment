@@ -120,11 +120,16 @@ export class AuthService {
     const refreshTokenExpiresIn = this.configService.get<number>(
       'REFRESH_TOKEN_EXPIRES_IN',
     );
-    const payload = { email: user.email, sub: user._id };
-    const accessToken = this.jwtService.sign(payload, {
+    const accessTokenPayload = {
+      email: user.email,
+      sub: user._id,
+      role: user.role,
+    };
+    const accessToken = this.jwtService.sign(accessTokenPayload, {
       expiresIn: accessTokenExpiresIn,
     });
-    const refreshToken = this.jwtService.sign(payload, {
+    const refreshTokenPayload = { sub: user._id };
+    const refreshToken = this.jwtService.sign(refreshTokenPayload, {
       expiresIn: refreshTokenExpiresIn,
     });
 
