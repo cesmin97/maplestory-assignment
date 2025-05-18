@@ -10,6 +10,7 @@ import { ConfigService } from '@nestjs/config';
 import { randomUUID } from 'crypto';
 import { Request } from 'express';
 import { firstValueFrom } from 'rxjs';
+import { AuthUserPayload } from 'src/auth/jwt.strategy';
 
 @Injectable()
 export class ProxyService {
@@ -61,6 +62,10 @@ export class ProxyService {
       'X-Forwarded-Proto': protocol,
       'X-Request-Id': randomUUID(),
     };
+    if (req.user) {
+      const user = req.user as AuthUserPayload;
+      forwardedHeaders['X-User-Id'] = user.userId;
+    }
 
     const config = {
       headers: {
