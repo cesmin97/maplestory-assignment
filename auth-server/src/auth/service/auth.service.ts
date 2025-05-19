@@ -8,6 +8,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
+import { Request } from 'express';
 import { Model } from 'mongoose';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { UserService } from 'src/user/service/user.service';
@@ -115,24 +116,8 @@ export class AuthService {
     await this.jwtTokenModel.deleteMany({ userId: user._id });
 
     /** 4. 토큰 발급 */
-    const accessTokenExpiresIn = this.configService.get<number>(
-      'ACCESS_TOKEN_EXPIRES_IN',
-    );
-    const refreshTokenExpiresIn = this.configService.get<number>(
-      'REFRESH_TOKEN_EXPIRES_IN',
-    );
-    const accessTokenPayload = {
-      email: user.email,
-      sub: user._id,
-      role: user.role,
-    };
-    const accessToken = this.jwtService.sign(accessTokenPayload, {
-      expiresIn: accessTokenExpiresIn,
-    });
-    const refreshTokenPayload = { sub: user._id };
-    const refreshToken = this.jwtService.sign(refreshTokenPayload, {
-      expiresIn: refreshTokenExpiresIn,
-    });
+    const accessToken = await this.signAccessToken(user);
+    const refreshToken = await this.signRefreshToken(user);
 
     /** 5. DB에 토큰 저장 */
     const newJwtToken = new this.jwtTokenModel({
@@ -152,6 +137,53 @@ export class AuthService {
       accessToken,
       refreshToken,
     };
+  }
+
+  /**
+   * 액세스 토큰 재발행
+   * email, password로 로그인
+   * 성공 시 accessToken 및 refreshToken 발급(DB로 상태 관리)
+   * accessToken은 body에 refreshToken은 HttpOnly Cookie에 응답
+   *
+   * @param dto
+   * @returns
+   */
+  async reissue(req: Request) {
+    /** 1. 리프레시 토큰 추출 */
+    const refreshToken = req.cookies?.['refresh-token'];
+
+    if (!refreshToken) {
+      throw new UnauthorizedException('리프레시 토큰이 없습니다.');
+    }
+
+    /** 2. JWT 파싱 및 유효성 검사 */
+    let payload: any;
+    try {
+      payload = this.jwtService.verify(refreshToken);
+    } catch (e) {
+      console.log(e.message);
+      throw new UnauthorizedException('만료되었거나 손상된 토큰입니다.');
+    }
+
+    /** 3. 사용자 정보 조회 */
+    const user = await this.userModel.findOne({ _id: payload.sub });
+    if (!user) {
+      throw new UnauthorizedException('사용자를 찾을 수 없습니다.');
+    }
+
+    /** 4. 토큰 DB에서 유효성 확인 */
+    const jwtToken = await this.jwtTokenModel.findOne({ userId: payload.sub });
+    if (refreshToken != jwtToken.refreshToken) {
+      throw new UnauthorizedException('유효하지 않은 리프레시 토큰입니다.');
+    }
+
+    /** 5. 새로운 Access Token 발급 */
+    const accessToken = await this.signAccessToken(user);
+
+    jwtToken.accessToken = accessToken;
+    await jwtToken.save();
+
+    return accessToken;
   }
 
   /**
@@ -182,5 +214,33 @@ export class AuthService {
 
     /** 3. 토큰 삭제 */
     await this.jwtTokenModel.deleteOne({ userId: user._id });
+  }
+
+  async signAccessToken(user: User) {
+    const accessTokenExpiresIn = this.configService.get<number>(
+      'ACCESS_TOKEN_EXPIRES_IN',
+    );
+    const accessTokenPayload = {
+      email: user.email,
+      sub: user._id,
+      role: user.role,
+    };
+    const accessToken = this.jwtService.sign(accessTokenPayload, {
+      expiresIn: accessTokenExpiresIn,
+    });
+
+    return accessToken;
+  }
+
+  async signRefreshToken(user: User) {
+    const refreshTokenExpiresIn = this.configService.get<number>(
+      'REFRESH_TOKEN_EXPIRES_IN',
+    );
+    const refreshTokenPayload = { sub: user._id };
+    const refreshToken = this.jwtService.sign(refreshTokenPayload, {
+      expiresIn: refreshTokenExpiresIn,
+    });
+
+    return refreshToken;
   }
 }

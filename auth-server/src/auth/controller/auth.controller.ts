@@ -5,10 +5,11 @@ import {
   Delete,
   HttpStatus,
   Post,
+  Req,
   Res,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { RevokeTokenDto } from '../dto/revoke-token.dto';
 import { SigninDto } from '../dto/signin.dto';
 import { SignupResponseDto } from '../dto/signup-response.dto';
@@ -47,7 +48,7 @@ export class AuthController {
   async signin(@Res() res: Response, @Body() dto: SigninDto) {
     const jwtToken = await this.authService.signin(dto);
 
-    // 2. 쿠키에 refresh_token 설정
+    /** 1. 쿠키에 refresh-token 설정 */
     const refreshTokenExpiresIn = this.configService.get<number>(
       'REFRESH_TOKEN_EXPIRES_IN',
     );
@@ -60,6 +61,22 @@ export class AuthController {
       message: '로그인 성공',
       accessToken: jwtToken.accessToken,
     });
+  }
+
+  /**
+   * 액세스 토큰 재발급 API
+   *
+   * @param res
+   * @param dto
+   */
+  @Post('reissue')
+  async reissue(@Req() req: Request) {
+    const reissuedToken = await this.authService.reissue(req);
+
+    return {
+      message: '토큰이 재발급 됐습니다.',
+      accessToken: reissuedToken,
+    };
   }
 
   /**
