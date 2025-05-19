@@ -1,0 +1,53 @@
+services:
+  mongo:
+    image: mongo:6
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - backend
+
+  auth-server:
+    build: ./auth-server
+    container_name: auth-server
+    ports:
+      - "55100:55100"
+    env_file:
+      - ./auth-server/.env
+    depends_on:
+      - mongo
+    networks:
+      - backend
+
+  event-server:
+    build: ./event-server
+    container_name: event-server
+    ports:
+      - "55200:55200"
+    env_file:
+      - ./event-server/.env
+    depends_on:
+      - mongo
+    networks:
+      - backend
+
+  gateway-server:
+    build: ./gateway-server
+    container_name: gateway-server
+    ports:
+      - "55000:55000"
+    env_file:
+      - ./gateway-server/.env
+    depends_on:
+      - auth-server
+      - event-server
+    networks:
+      - backend
+
+volumes:
+  mongo-data:
+
+networks:
+  backend:

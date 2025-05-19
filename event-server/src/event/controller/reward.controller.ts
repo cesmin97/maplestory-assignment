@@ -39,7 +39,7 @@ export class RewardController {
    * @param eventId
    * @returns
    */
-  @Post('request/')
+  @Post('request')
   async requestReward(
     @Query('eventId') eventId: string,
     @Headers('x-user-id') userId: string,

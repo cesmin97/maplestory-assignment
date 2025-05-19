@@ -1,6 +1,7 @@
 {
   "name": "event-server",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "main": "dist/main.js",
   "description": "Event Server",
   "author": "Seongmin Hong",
   "private": true,
