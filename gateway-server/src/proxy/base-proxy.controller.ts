@@ -11,8 +11,12 @@ export class BaseProxyController {
    */
   protected async handleProxy(req: Request, res: Response) {
     try {
-      const data = await this.proxyService.proxyRequest(req);
-      return res.status(HttpStatus.OK).json(data);
+      const response = await this.proxyService.proxyRequest(req);
+
+      return res
+        .status(response.status)
+        .set(response.headers)
+        .send(response.data);
     } catch (error: any) {
       if (error.response && error.isAxiosError) {
         const { status, data } = error.response;

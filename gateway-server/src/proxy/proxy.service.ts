@@ -1,5 +1,4 @@
 /* eslint-disable prettier/prettier */
-// src/proxy/proxy.service.ts
 import { HttpService } from '@nestjs/axios';
 import {
   BadRequestException,
@@ -46,7 +45,7 @@ export class ProxyService {
 
     const url = `${baseUrl}${adjustedPath}`;
 
-    /** 2. 헤더 정제 및 추가 */
+    /** 2. 헤더 정제 */
     const blockedHeaders = ['content-length', 'host', 'connection'];
     const safeHeaders = Object.fromEntries(
       Object.entries(headers).filter(
@@ -77,27 +76,22 @@ export class ProxyService {
     /** 3. 요청 실행 */
     switch (method.toUpperCase()) {
       case 'GET':
-        return (await firstValueFrom(this.httpService.get(url, config))).data;
+        return await firstValueFrom(this.httpService.get(url, config));
       case 'POST':
-        return (await firstValueFrom(this.httpService.post(url, body, config)))
-          .data;
+        return await firstValueFrom(this.httpService.post(url, body, config));
       case 'PUT':
-        return (await firstValueFrom(this.httpService.put(url, body, config)))
-          .data;
+        return await firstValueFrom(this.httpService.put(url, body, config));
       case 'PATCH':
-        return (await firstValueFrom(this.httpService.patch(url, body, config)))
-          .data;
+        return await firstValueFrom(this.httpService.patch(url, body, config));
       case 'DELETE':
-        return (
-          await firstValueFrom(
-            this.httpService.request({
-              method: 'DELETE',
-              url,
-              data: body,
-              ...config,
-            }),
-          )
-        ).data;
+        return await firstValueFrom(
+          this.httpService.request({
+            method: 'DELETE',
+            url,
+            data: body,
+            ...config,
+          }),
+        );
       default:
         throw new BadRequestException(`${method} 메서드는 지원하지 않습니다.`);
     }
