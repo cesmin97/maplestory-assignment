@@ -91,7 +91,7 @@ export class UserService {
     }
 
     /** 2. DB 부하를 최소화하기 위해 현재 같은 권한을 보유 중이면 그대로 return */
-    if ((user.role = role)) {
+    if (user.role == role) {
       return user;
     }
 
