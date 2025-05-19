@@ -1,9 +1,9 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateRoleDto } from '../dto/update-role.dto';
-import { UserService } from '../service/user.service';
 import { UpdateUserDto } from '../dto/update-user.dto';
+import { UserService } from '../service/user.service';
 
 @Controller('users')
 export class UserController {
@@ -27,6 +27,22 @@ export class UserController {
         role: user.role,
         createdAt: user.createdAt,
       },
+    };
+  }
+
+  /**
+   * 사용자 목록 조회 API
+   * 관리자만 접근 가능
+   *
+   * @param dto
+   * @returns
+   */
+  @Get()
+  async getUsers() {
+    const users = await this.userService.findUsers();
+    return {
+      message: '사용자 목록 조회',
+      users,
     };
   }
 

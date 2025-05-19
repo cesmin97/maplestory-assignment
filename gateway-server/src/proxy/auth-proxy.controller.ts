@@ -2,6 +2,7 @@
 import {
   Controller,
   Delete,
+  Get,
   Patch,
   Post,
   Req,
@@ -40,6 +41,13 @@ export class AuthProxyController extends BaseProxyController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   async createUser(@Req() req: Request, @Res() res: Response) {
+    return this.handleProxy(req, res);
+  }
+
+  @Get('users')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  async getUsers(@Req() req: Request, @Res() res: Response) {
     return this.handleProxy(req, res);
   }
 

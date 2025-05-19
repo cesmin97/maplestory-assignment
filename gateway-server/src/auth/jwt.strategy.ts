@@ -39,7 +39,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const accessToken = req.headers.authorization?.replace('Bearer ', '');
 
     const jwtToken = await this.jwtTokenModel.findOne({ userId: payload.sub });
-    if (accessToken != jwtToken.accessToken) {
+    if (!jwtToken || accessToken != jwtToken.accessToken) {
       throw new UnauthorizedException('유효하지 않은 토큰입니다.');
     }
 

@@ -43,6 +43,17 @@ export class UserService {
   }
 
   /**
+   * 사용자 목록 조회
+   *
+   * @param id
+   */
+  async findUsers() {
+    const users = await this.userModel.find();
+
+    return users;
+  }
+
+  /**
    * 사용자 ID 기반 사용자 조회
    *
    * @param id
