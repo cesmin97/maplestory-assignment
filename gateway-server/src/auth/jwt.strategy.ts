@@ -1,8 +1,12 @@
 /* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { InjectModel } from '@nestjs/mongoose';
 import { PassportStrategy } from '@nestjs/passport';
+import { Request } from 'express';
+import { Model } from 'mongoose';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { JwtToken, JwtTokenDocument } from './schema/jwt-token.schema';
 
 export interface AuthUserPayload {
   userId: string;
@@ -12,11 +16,15 @@ export interface AuthUserPayload {
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    @InjectModel(JwtToken.name) private jwtTokenModel: Model<JwtTokenDocument>,
+    private readonly configService: ConfigService,
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
       secretOrKey: configService.get<string>('JWT_SECRET_KEY'),
+      passReqToCallback: true,
     });
   }
 
@@ -27,7 +35,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
    * @param payload
    * @returns
    */
-  async validate(payload: any) {
+  async validate(req: Request, payload: any) {
+    const accessToken = req.headers.authorization?.replace('Bearer ', '');
+
+    const jwtToken = await this.jwtTokenModel.findOne({ userId: payload.sub });
+    if (accessToken != jwtToken.accessToken) {
+      throw new UnauthorizedException('유효하지 않은 토큰입니다.');
+    }
+
     return {
       userId: payload.sub,
       email: payload.email,

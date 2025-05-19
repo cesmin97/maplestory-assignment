@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { Roles } from 'src/auth/roles.decorator';
-import { OptionalJwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { BaseProxyController } from './base-proxy.controller';
 import { ProxyService } from './proxy.service';
@@ -32,28 +32,28 @@ export class AuthProxyController extends BaseProxyController {
   }
 
   @Post('users')
-  @UseGuards(OptionalJwtAuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   async createUser(@Req() req: Request, @Res() res: Response) {
     return this.handleProxy(req, res);
   }
 
   @Patch('users')
-  @UseGuards(OptionalJwtAuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   async updateUser(@Req() req: Request, @Res() res: Response) {
     return this.handleProxy(req, res);
   }
 
   @Patch('users/role')
-  @UseGuards(OptionalJwtAuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   async updateRole(@Req() req: Request, @Res() res: Response) {
     return this.handleProxy(req, res);
   }
 
   @Delete('auth/revoke-token')
-  @UseGuards(OptionalJwtAuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   async revokeToken(@Req() req: Request, @Res() res: Response) {
     return this.handleProxy(req, res);
