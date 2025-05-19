@@ -8,6 +8,8 @@ export class SignupResponseDto {
 
   email: string;
 
+  name: string;
+
   role: string;
 
   createdAt: Date;
@@ -15,6 +17,7 @@ export class SignupResponseDto {
   constructor(user: User) {
     this.id = user._id;
     this.email = user.email;
+    this.name = user.name;
     this.role = user.role;
     this.createdAt = toKstTime(user.createdAt);
   }

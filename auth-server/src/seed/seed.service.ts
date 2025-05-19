@@ -1,9 +1,9 @@
 /* eslint-disable prettier/prettier */
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
 import { User, UserDocument } from 'src/user/schema/user.schema';
+import { hashPassword } from 'src/util/password.util';
 import { initialUsers } from './users.seed';
 
 @Injectable()
@@ -26,7 +26,7 @@ export class SeedService {
         continue;
       }
 
-      const hashedPassword = await bcrypt.hash(user.password, 10);
+      const hashedPassword = await hashPassword(user.password, 10);
       await this.userModel.create({
         ...user,
         password: hashedPassword,

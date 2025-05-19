@@ -18,6 +18,10 @@ export class CreateUserDto {
   @MinLength(6, { message: '비밀번호는 최소 6자 이상이어야 합니다.' })
   password: string;
 
+  @IsString()
+  @IsNotEmpty({ message: '이름은 필수입니다.' })
+  name: string;
+
   @IsEnum(UserRole, { message: '유효하지 않은 역할입니다.' })
   role: UserRole;
 

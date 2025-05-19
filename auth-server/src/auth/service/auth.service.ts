@@ -50,7 +50,7 @@ export class AuthService {
    * @returns
    */
   async signup(dto: SignupDto): Promise<SignupResponseDto> {
-    const { email, password, invitedBy } = dto;
+    const { email, password, name, invitedBy } = dto;
 
     /** 1. 중복 사용자 검증 */
     const existingUser = await this.userModel.findOne({ email });
@@ -60,8 +60,9 @@ export class AuthService {
 
     /** 2. 사용자 생성 */
     const createUserDto = new CreateUserDto({
-      email: email,
-      password: password,
+      email,
+      password,
+      name,
       role: UserRole.USER,
     });
     const createdUser = await this.userService.createUser(createUserDto);

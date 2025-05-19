@@ -1,28 +1,29 @@
 /* eslint-disable prettier/prettier */
 import {
   IsEmail,
-  IsMongoId,
+  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
   MinLength,
 } from 'class-validator';
+import { UserRole } from '../schema/user.schema';
 
-export class SignupDto {
+export class UpdateUserDto {
   @IsEmail()
-  @IsNotEmpty({ message: '이메일은 필수입니다.' })
+  @IsNotEmpty({ message: '사용자 이메일은 필수입니다.' })
   email: string;
 
+  @IsOptional()
   @IsString()
-  @IsNotEmpty({ message: '비밀번호는 필수입니다.' })
   @MinLength(6, { message: '비밀번호는 최소 6자 이상이어야 합니다.' })
-  password: string;
+  password?: string;
 
   @IsString()
   @IsNotEmpty({ message: '이름은 필수입니다.' })
   name: string;
 
-  @IsOptional()
-  @IsMongoId({ message: '유효하지 않은 사용자 ID입니다.' })
-  invitedBy?;
+  @IsEnum(UserRole, { message: '유효하지 않은 역할입니다.' })
+  @IsNotEmpty({ message: '역할은 필수입니다.' })
+  role: UserRole;
 }

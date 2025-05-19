@@ -9,6 +9,7 @@ import { Model } from 'mongoose';
 import { hashPassword } from 'src/util/password.util';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateRoleDto } from '../dto/update-role.dto';
+import { UpdateUserDto } from '../dto/update-user.dto';
 import { User, UserDocument, UserRole } from '../schema/user.schema';
 
 @Injectable()
@@ -22,7 +23,7 @@ export class UserService {
    * @returns
    */
   async createUser(dto: CreateUserDto): Promise<User> {
-    const { email, password, role } = dto;
+    const { email, password, name, role } = dto;
 
     /** 1. 중복 사용자 검증 */
     const existingUser = await this.userModel.findOne({ email });
@@ -35,6 +36,7 @@ export class UserService {
     const newUser = new this.userModel({
       email,
       password: hashedPassword,
+      name,
       role: role ? role : UserRole.USER,
     });
     return await newUser.save();
@@ -52,24 +54,49 @@ export class UserService {
   }
 
   /**
-   * 사용자 권한 부여
+   * 사용자 정보 변경
    *
    * @param dto
    */
-  async updateRole(dto: UpdateRoleDto) {
+  async updateUser(dto: UpdateUserDto) {
+    const { password, name, role } = dto;
+
     /** 1. 사용자 검증 */
     const user = await this.userModel.findOne({ email: dto.email });
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
+    /** 3. 사용자 업데이트 */
+    if (password) {
+      user.password = await hashPassword(password);
+    }
+    user.name = name;
+    user.role = role;
+    return await user.save();
+  }
+
+  /**
+   * 사용자 권한 부여
+   *
+   * @param dto
+   */
+  async updateRole(dto: UpdateRoleDto) {
+    const { email, role } = dto;
+
+    /** 1. 사용자 검증 */
+    const user = await this.userModel.findOne({ email: email });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
     /** 2. DB 부하를 최소화하기 위해 현재 같은 권한을 보유 중이면 그대로 return */
-    if ((user.role = dto.role)) {
+    if ((user.role = role)) {
       return user;
     }
 
     /** 3. 권한 업데이트 */
-    user.role = dto.role;
+    user.role = role;
     return await user.save();
   }
 }

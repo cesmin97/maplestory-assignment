@@ -3,6 +3,7 @@ import { Body, Controller, Patch, Post } from '@nestjs/common';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateRoleDto } from '../dto/update-role.dto';
 import { UserService } from '../service/user.service';
+import { UpdateUserDto } from '../dto/update-user.dto';
 
 @Controller('users')
 export class UserController {
@@ -25,6 +26,27 @@ export class UserController {
         email: user.email,
         role: user.role,
         createdAt: user.createdAt,
+      },
+    };
+  }
+
+  /**
+   * 사용자 정보 변경 API
+   * 관리자만 접근 가능
+   *
+   * @param dto
+   * @returns
+   */
+  @Patch('')
+  async updateUser(@Body() dto: UpdateUserDto) {
+    const user = await this.userService.updateUser(dto);
+    return {
+      message: '사용자 정보가 변경되었습니다.',
+      user: {
+        id: user._id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
       },
     };
   }

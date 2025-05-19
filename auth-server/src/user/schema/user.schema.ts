@@ -21,6 +21,10 @@ export class User {
   @Prop({ required: true })
   password: string;
 
+  /** 이름 */
+  @Prop({ required: true })
+  name: string;
+
   /** 권한 */
   @Prop({ enum: UserRole, default: UserRole.USER })
   role: UserRole;
