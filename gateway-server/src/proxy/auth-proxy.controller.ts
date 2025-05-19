@@ -31,6 +31,11 @@ export class AuthProxyController extends BaseProxyController {
     return this.handleProxy(req, res);
   }
 
+  @Post('auth/reissue')
+  async reissue(@Req() req: Request, @Res() res: Response) {
+    return this.handleProxy(req, res);
+  }
+
   @Post('users')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
