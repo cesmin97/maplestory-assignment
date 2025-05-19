@@ -1,0 +1,237 @@
+{
+	"info": {
+		"_postman_id": "c213f65f-8708-4bcb-8549-bd3cff3c54a3",
+		"name": "Auth",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36330963",
+		"_collection_link": "https://www.postman.com/cesmin/workspace/maplestory-assignment/collection/36330963-c213f65f-8708-4bcb-8549-bd3cff3c54a3?action=share&source=collection_link&creator=36330963"
+	},
+	"item": [
+		{
+			"name": "Signup",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"seongmin@nexon.com\",\r\n  \"password\": \"securepassword\",\r\n  \"name\": \"홍성민\",\r\n  \"invitedBy\": \"682b2ff39e44938f6f2cd4ed\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Auth Server URL}}/auth/signup",
+					"host": [
+						"{{Auth Server URL}}"
+					],
+					"path": [
+						"auth",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Gateway] Signup",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"testuser3@nexon.com\",\r\n  \"password\": \"securepassword\",\r\n  \"name\": \"테스트 유저\",\r\n  \"invitedBy\": \"682b5ccdca717909c1375584\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Gateway Server URL}}/auth-api/auth/signup",
+					"host": [
+						"{{Gateway Server URL}}"
+					],
+					"path": [
+						"auth-api",
+						"auth",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Signin",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"user1@nexon.com\",\r\n  \"password\": \"securepassword\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Auth Server URL}}/auth/signin",
+					"host": [
+						"{{Auth Server URL}}"
+					],
+					"path": [
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Gateway] Signin",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"seongmin@nexon.com\",\r\n  \"password\": \"securepassword\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Gateway Server URL}}/auth-api/auth/signin",
+					"host": [
+						"{{Gateway Server URL}}"
+					],
+					"path": [
+						"auth-api",
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Reissue",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"user1@nexon.com\",\r\n  \"password\": \"securepasetsword\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Auth Server URL}}/auth/reissue",
+					"host": [
+						"{{Auth Server URL}}"
+					],
+					"path": [
+						"auth",
+						"reissue"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Gateway] Reissue",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Gateway Server URL}}/auth-api/auth/reissue",
+					"host": [
+						"{{Gateway Server URL}}"
+					],
+					"path": [
+						"auth-api",
+						"auth",
+						"reissue"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Revoke Token",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"seongmin@nexon.com\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Auth Server URL}}/auth/revoke-token",
+					"host": [
+						"{{Auth Server URL}}"
+					],
+					"path": [
+						"auth",
+						"revoke-token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Gateway] Revoke Token",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"seongmin@nexon.com\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Gateway Server URL}}/auth-api/auth/revoke-token",
+					"host": [
+						"{{Gateway Server URL}}"
+					],
+					"path": [
+						"auth-api",
+						"auth",
+						"revoke-token"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

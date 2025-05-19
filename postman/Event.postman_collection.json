@@ -1,0 +1,508 @@
+{
+	"info": {
+		"_postman_id": "eba2754e-8610-4b88-9274-f3df3d631fb4",
+		"name": "Event",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36330963",
+		"_collection_link": "https://www.postman.com/cesmin/workspace/maplestory-assignment/collection/36330963-eba2754e-8610-4b88-9274-f3df3d631fb4?action=share&source=collection_link&creator=36330963"
+	},
+	"item": [
+		{
+			"name": "Create Event",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"테스트 이벤트\",  // 이벤트 명\r\n  \"description\": \"테스트 이벤트입니다.\",  // 이벤트 설명\r\n  \"status\": \"ACTIVATE\",  // 이벤트 상태\r\n  \"startDate\": \"2025-05-01\",  // 이벤트 시작일\r\n  \"endDate\": \"2025-06-30\",  // 이벤트 종료일\r\n  \"conditions\": [\r\n    {\r\n      \"type\": \"FRIEND_INVITE\",  // 조건 유형 (예: friend_invite)\r\n      \"value\": 3,  // 조건 값 (예: 친구 3명 초대)\r\n      \"description\": \"친구 초대 3명 이상\",  // 조건 설명\r\n      \"isActivate\": true  // 활성화 여부\r\n    },\r\n    {\r\n      \"type\": \"LOGIN_STREAK\",  // 조건 유형\r\n      \"value\": 3,  // 조건 값\r\n      \"description\": \"연속 로그인 3일 이상\",  // 조건 설명\r\n      \"isActivate\": true  // 활성화 여부\r\n    }\r\n  ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Event Server URL}}/events",
+					"host": [
+						"{{Event Server URL}}"
+					],
+					"path": [
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Gateway] Create Event",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"테스트 이벤트\",  // 이벤트 명\r\n  \"description\": \"테스트 이벤트입니다.\",  // 이벤트 설명\r\n  \"status\": \"ACTIVATE\",  // 이벤트 상태\r\n  \"startDate\": \"2025-05-01\",  // 이벤트 시작일\r\n  \"endDate\": \"2025-06-30\",  // 이벤트 종료일\r\n  \"conditions\": [\r\n    {\r\n      \"type\": \"FRIEND_INVITE\",  // 조건 유형 (예: friend_invite)\r\n      \"value\": 3,  // 조건 값 (예: 친구 3명 초대)\r\n      \"description\": \"친구 초대 3명 이상\",  // 조건 설명\r\n      \"isActivate\": true  // 활성화 여부\r\n    },\r\n    {\r\n      \"type\": \"LOGIN_STREAK\",  // 조건 유형\r\n      \"value\": 3,  // 조건 값\r\n      \"description\": \"연속 로그인 3일 이상\",  // 조건 설명\r\n      \"isActivate\": true  // 활성화 여부\r\n    }\r\n  ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Gateway Server URL}}/event-api/events",
+					"host": [
+						"{{Gateway Server URL}}"
+					],
+					"path": [
+						"event-api",
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Reward",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"type\": \"COUPON\",\r\n  \"name\": \"펫 할인 쿠폰 30%\",\r\n  \"amount\": 1,\r\n  \"description\": \"미션 완료 보상으로 지급되는 쿠폰\",\r\n  \"isActivate\": true\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Event Server URL}}/rewards?eventId={{eventId}}",
+					"host": [
+						"{{Event Server URL}}"
+					],
+					"path": [
+						"rewards"
+					],
+					"query": [
+						{
+							"key": "eventId",
+							"value": "{{eventId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Gateway] Reward",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"type\": \"ITEM\",\r\n  \"name\": \"자쿰의 투구\",\r\n  \"amount\": 1,\r\n  \"description\": \"미션 완료 보상으로 지급되는 아이템\",\r\n  \"isActivate\": true\r\n}\r\n// {\r\n//   \"type\": \"ITEM\",\r\n//   \"name\": \"몽환의 벨트\",\r\n//   \"amount\": 1,\r\n//   \"description\": \"미션 완료 보상으로 지급되는 아이템\",\r\n//   \"isActivate\": true\r\n// }\r\n// {\r\n//   \"type\": \"POINT\",\r\n//   \"name\": \"물약상점 포인트\",\r\n//   \"amount\": 1000,\r\n//   \"description\": \"미션 완료 보상으로 지급되는 포인트\",\r\n//   \"isActivate\": true\r\n// }\r\n// {\r\n//   \"type\": \"COUPON\",\r\n//   \"name\": \"펫 할인 쿠폰 30%\",\r\n//   \"amount\": 1,\r\n//   \"description\": \"미션 완료 보상으로 지급되는 쿠폰\",\r\n//   \"isActivate\": true\r\n// }\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Gateway Server URL}}/event-api/rewards?eventId={{eventId}}",
+					"host": [
+						"{{Gateway Server URL}}"
+					],
+					"path": [
+						"event-api",
+						"rewards"
+					],
+					"query": [
+						{
+							"key": "eventId",
+							"value": "{{eventId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Reqeust Rewards",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-User-Id",
+						"value": "682a00db0069925be7dcc0e7",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"type\": \"ITEM\",\r\n  \"name\": \"자쿰의 투구\",\r\n  \"amount\": 1,\r\n  \"description\": \"미션 완료 보상으로 지급되는 아이템\",\r\n  \"isActivate\": true,\r\n  \"startDate\": \"2025-05-01T00:00:00Z\",\r\n  \"endDate\": \"2025-06-01T00:00:00Z\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Event Server URL}}/rewards/request?eventId={{eventId}}",
+					"host": [
+						"{{Event Server URL}}"
+					],
+					"path": [
+						"rewards",
+						"request"
+					],
+					"query": [
+						{
+							"key": "eventId",
+							"value": "{{eventId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Gateway] Reqeust Rewards",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"type\": \"ITEM\",\r\n  \"name\": \"자쿰의 투구\",\r\n  \"amount\": 1,\r\n  \"description\": \"미션 완료 보상으로 지급되는 아이템\",\r\n  \"isActivate\": true,\r\n  \"startDate\": \"2025-05-01T00:00:00Z\",\r\n  \"endDate\": \"2025-06-01T00:00:00Z\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Gateway Server URL}}/event-api/rewards/request?eventId={{eventId}}",
+					"host": [
+						"{{Gateway Server URL}}"
+					],
+					"path": [
+						"event-api",
+						"rewards",
+						"request"
+					],
+					"query": [
+						{
+							"key": "eventId",
+							"value": "{{eventId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Events",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Event Server URL}}/events",
+					"host": [
+						"{{Event Server URL}}"
+					],
+					"path": [
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Gateway] Get Events",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Gateway Server URL}}/event-api/events",
+					"host": [
+						"{{Gateway Server URL}}"
+					],
+					"path": [
+						"event-api",
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Event By ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Event Server URL}}/events/6828703a989c7c14a2ac729f",
+					"host": [
+						"{{Event Server URL}}"
+					],
+					"path": [
+						"events",
+						"6828703a989c7c14a2ac729f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Gateway] Get Event By ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Gateway Server URL}}/event-api/events/{{eventId}}",
+					"host": [
+						"{{Gateway Server URL}}"
+					],
+					"path": [
+						"event-api",
+						"events",
+						"{{eventId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Event Conditions By Event ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Event Server URL}}/events/{{eventId}}/conditions",
+					"host": [
+						"{{Event Server URL}}"
+					],
+					"path": [
+						"events",
+						"{{eventId}}",
+						"conditions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Gateway] Get Event Conditions By Event ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Gateway Server URL}}/event-api/events/{{eventId}}/conditions",
+					"host": [
+						"{{Gateway Server URL}}"
+					],
+					"path": [
+						"event-api",
+						"events",
+						"{{eventId}}",
+						"conditions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Rewards By Event ID",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"테스트 이벤트\",  // 이벤트 명\r\n  \"description\": \"테스트 이벤트입니다.\",  // 이벤트 설명\r\n  \"status\": \"ACTIVATE\",  // 이벤트 상태\r\n  \"startDate\": \"2025-06-01\",  // 이벤트 시작일\r\n  \"endDate\": \"2025-06-30\",  // 이벤트 종료일\r\n  \"conditions\": [\r\n    // {\r\n    //   \"type\": \"FRIEND_INVITE\",  // 조건 유형 (예: friend_invite)\r\n    //   \"value\": 3,  // 조건 값 (예: 친구 3명 초대)\r\n    //   \"description\": \"친구 초대 3명 이상\",  // 조건 설명\r\n    //   \"isActivate\": true  // 활성화 여부\r\n    // },\r\n    {\r\n      \"type\": \"LOGIN_STREAK\",  // 조건 유형\r\n      \"value\": 3,  // 조건 값\r\n      \"description\": \"연속 로그인 3일 이상\",  // 조건 설명\r\n      \"isActivate\": true  // 활성화 여부\r\n    }\r\n  ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Event Server URL}}/rewards?eventId={{eventId}}",
+					"host": [
+						"{{Event Server URL}}"
+					],
+					"path": [
+						"rewards"
+					],
+					"query": [
+						{
+							"key": "eventId",
+							"value": "{{eventId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Gateway] Get Rewards By Event ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Gateway Server URL}}/event-api/rewards?eventId={{eventId}}",
+					"host": [
+						"{{Gateway Server URL}}"
+					],
+					"path": [
+						"event-api",
+						"rewards"
+					],
+					"query": [
+						{
+							"key": "eventId",
+							"value": "{{eventId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Reward Histories",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"테스트 이벤트\",  // 이벤트 명\r\n  \"description\": \"테스트 이벤트입니다.\",  // 이벤트 설명\r\n  \"status\": \"ACTIVATE\",  // 이벤트 상태\r\n  \"startDate\": \"2025-06-01\",  // 이벤트 시작일\r\n  \"endDate\": \"2025-06-30\",  // 이벤트 종료일\r\n  \"conditions\": [\r\n    // {\r\n    //   \"type\": \"FRIEND_INVITE\",  // 조건 유형 (예: friend_invite)\r\n    //   \"value\": 3,  // 조건 값 (예: 친구 3명 초대)\r\n    //   \"description\": \"친구 초대 3명 이상\",  // 조건 설명\r\n    //   \"isActivate\": true  // 활성화 여부\r\n    // },\r\n    {\r\n      \"type\": \"LOGIN_STREAK\",  // 조건 유형\r\n      \"value\": 3,  // 조건 값\r\n      \"description\": \"연속 로그인 3일 이상\",  // 조건 설명\r\n      \"isActivate\": true  // 활성화 여부\r\n    }\r\n  ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Event Server URL}}/rewards/histories",
+					"host": [
+						"{{Event Server URL}}"
+					],
+					"path": [
+						"rewards",
+						"histories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Gateway] Get Reward Histories",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{Gateway Server URL}}/event-api/rewards/histories",
+					"host": [
+						"{{Gateway Server URL}}"
+					],
+					"path": [
+						"event-api",
+						"rewards",
+						"histories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get My Reward Histories",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-User-Id",
+						"value": "682a00db0069925be7dcc0e7",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"테스트 이벤트\",  // 이벤트 명\r\n  \"description\": \"테스트 이벤트입니다.\",  // 이벤트 설명\r\n  \"status\": \"ACTIVATE\",  // 이벤트 상태\r\n  \"startDate\": \"2025-06-01\",  // 이벤트 시작일\r\n  \"endDate\": \"2025-06-30\",  // 이벤트 종료일\r\n  \"conditions\": [\r\n    // {\r\n    //   \"type\": \"FRIEND_INVITE\",  // 조건 유형 (예: friend_invite)\r\n    //   \"value\": 3,  // 조건 값 (예: 친구 3명 초대)\r\n    //   \"description\": \"친구 초대 3명 이상\",  // 조건 설명\r\n    //   \"isActivate\": true  // 활성화 여부\r\n    // },\r\n    {\r\n      \"type\": \"LOGIN_STREAK\",  // 조건 유형\r\n      \"value\": 3,  // 조건 값\r\n      \"description\": \"연속 로그인 3일 이상\",  // 조건 설명\r\n      \"isActivate\": true  // 활성화 여부\r\n    }\r\n  ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Event Server URL}}/rewards/histories/my",
+					"host": [
+						"{{Event Server URL}}"
+					],
+					"path": [
+						"rewards",
+						"histories",
+						"my"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Gateway] Get My Reward Histories",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{Gateway Server URL}}/event-api/rewards/histories/my",
+					"host": [
+						"{{Gateway Server URL}}"
+					],
+					"path": [
+						"event-api",
+						"rewards",
+						"histories",
+						"my"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

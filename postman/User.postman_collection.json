@@ -1,0 +1,231 @@
+{
+	"info": {
+		"_postman_id": "4f2977bc-75ad-4fa8-b530-90a41942f2b1",
+		"name": "User",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36330963",
+		"_collection_link": "https://www.postman.com/cesmin/workspace/maplestory-assignment/collection/36330963-4f2977bc-75ad-4fa8-b530-90a41942f2b1?action=share&source=collection_link&creator=36330963"
+	},
+	"item": [
+		{
+			"name": "Create User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"user@nexon.com\",\r\n    \"password\": \"securepassword\",\r\n    \"role\": \"USER\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Auth Server URL}}/users",
+					"host": [
+						"{{Auth Server URL}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Gateway] Create User",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"user@nexon.com\",\r\n    \"password\": \"securepassword\",\r\n    \"name\": \"테스트 유저\",\r\n    \"role\": \"USER\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Gateway Server URL}}/auth-api/users",
+					"host": [
+						"{{Gateway Server URL}}"
+					],
+					"path": [
+						"auth-api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Users",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Auth Server URL}}/users",
+					"host": [
+						"{{Auth Server URL}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Gateway] Get Users",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{Gateway Server URL}}/auth-api/users",
+					"host": [
+						"{{Gateway Server URL}}"
+					],
+					"path": [
+						"auth-api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"user1@nexon.com\",\r\n    \"name\": \"test\",\r\n    \"role\": \"USER\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Auth Server URL}}/users",
+					"host": [
+						"{{Auth Server URL}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Gateway] Update User",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"user3@nexon.com\",\r\n    // \"password\": \"securepasetsword\", //optional\r\n    \"name\": \"test user\",\r\n    \"role\": \"USER\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Gateway Server URL}}/auth-api/users",
+					"host": [
+						"{{Gateway Server URL}}"
+					],
+					"path": [
+						"auth-api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User Role",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"user3@nexon.com\",\r\n    \"role\": \"ADMIN\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Auth Server URL}}/users/role",
+					"host": [
+						"{{Auth Server URL}}"
+					],
+					"path": [
+						"users",
+						"role"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Gateway] Update User Role",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"seongmin@nexon.com\",\r\n    \"role\": \"ADMIN\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Gateway Server URL}}/auth-api/users/role",
+					"host": [
+						"{{Gateway Server URL}}"
+					],
+					"path": [
+						"auth-api",
+						"users",
+						"role"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
